@@ -1,0 +1,80 @@
+---
+title: "SRB Assay Analysis"
+author: "SJ Rothfuss and PL Coleman"
+date: "2022-10-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(drc)
+```
+
+## Read file into R
+```{r}
+### set file location
+RawFilepath <- '/Users/spencer/Dropbox/Documents/Vanderbilt/ChazinLab/SRBAssays/cisPt/20220929_SRBAssayQuantification_Cispt120hr.csv'
+###
+
+platelayout <- read.csv(RawFilepath)
+```
+
+## Edit file
+```{r}
+### specify drug concentrations used:
+Dosages <- c(0,3,6,10,20,30)
+###
+
+# select relevant columns
+dat <- platelayout[1:6,2:10]
+
+# remove background absorbance from media control wells
+backgroundabs <- mean(as.numeric(dat[1,7:9]))
+correcteddat <- dat[1:6,1:6]-backgroundabs
+
+# rename columns and add dosage column
+colnames(correcteddat) <- c('Null1', 'Null2', 'Null3', 'WT1', 'WT2', 'WT3')
+correcteddat$Dose <- Dosages
+correcteddat <- correcteddat[c(7,1:6)] # move dosage column to first position
+
+# calculate fractional growth compared to untreated sample
+correcteddat$NullGrowth <- rowMeans(correcteddat[,2:4])/mean(as.numeric(correcteddat[1,2:4]))
+correcteddat$WTGrowth <- rowMeans(correcteddat[,5:7])/mean(as.numeric(correcteddat[1,5:7]))
+```
+
+## Create dose response curves
+```{r, results='hide', warning=FALSE}
+### specify formatting variables for graph:
+IC50Units <- 'µM'
+NullColor <- 'red'
+WTColor <- 'black'
+MainTitle <- 'Cisplatin Dose Response in XP2OS'
+SubTitle <- '2hr drug exposure, 120hr growth, n=1 with technical triplicates'
+YAxisTitle <- 'Fractional survival'
+XAxisTitle <- 'Cisplatin Dosage (µM)'
+OutputFilepath <- '/Users/spencer/Dropbox/Documents/Vanderbilt/ChazinLab/SRBAssays/20221010-CisPtDRC120hr.png'
+###
+
+### remove comment on `png` command and rerun chunk when ready to save file:
+#png(filename = OutputFilepath, width = 6, height = 4, units = "in", res = 300)
+###
+
+# generate models
+Nullmodel <- drm(NullGrowth ~ Dose, data=correcteddat, fct=LL.4())
+WTmodel <- drm(WTGrowth ~ Dose, data=correcteddat, fct=LL.4())
+
+# calculate IC50s and SDs to 2 dcimal places
+NullED50 <- format(round(ED(Nullmodel, 50)[1],2))
+NullSD <- format(round(ED(Nullmodel, 50)[2],1))
+WTED50 <- format(round(ED(WTmodel, 50)[1],2))
+WTSD <- format(round(ED(WTmodel, 50)[2],1))
+
+# add elements to plot
+plot(Nullmodel, main = MainTitle, sub = SubTitle, ylab = YAxisTitle, xlab = XAxisTitle, ylim = c(0,1.1), xaxt = 'n', col = NullColor)
+plot(WTmodel, add=TRUE, col = WTColor)
+axis(1, at = as.numeric(correcteddat$Dose)) # add x-axis tick marks at dosages
+abline(v=c(NullED50,WTED50), col = c(NullColor,WTColor), lty = (3)) # add dashed lines at both IC50s
+WTDetails <- paste('WT: IC50 =', WTED50, IC50Units, '±', WTSD, IC50Units)
+NullDetails <- paste('Null: IC50 =', NullED50, IC50Units, '±', NullSD, IC50Units)
+legend('bottomleft', c(WTDetails,NullDetails), fill = c(WTColor,NullColor)) # create legend with colors for each curve and IC50s rounded to two decimal places
+```
