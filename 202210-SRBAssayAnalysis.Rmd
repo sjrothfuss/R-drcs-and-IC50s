@@ -13,7 +13,7 @@ library(drc)
 ## Read file into R
 ```{r}
 ### set file location
-RawFilepath <- '/Users/spencer/Dropbox/Documents/Vanderbilt/ChazinLab/SRBAssays/cisPt/20220929_SRBAssayQuantification_Cispt120hr.csv'
+RawFilepath <- '20220929_SRBAssayQuantification_Cispt120hr.csv'
 ###
 
 platelayout <- read.csv(RawFilepath)
@@ -52,11 +52,11 @@ MainTitle <- 'Cisplatin Dose Response in XP2OS'
 SubTitle <- '2hr drug exposure, 120hr growth, n=1 with technical triplicates'
 YAxisTitle <- 'Fractional survival'
 XAxisTitle <- 'Cisplatin Dosage (µM)'
-OutputFilepath <- '/Users/spencer/Dropbox/Documents/Vanderbilt/ChazinLab/SRBAssays/20221010-CisPtDRC120hr.png'
+OutputFilepath <- 'CisPtDRC120hr.png'
 ###
 
 ### remove comment on `png` command and rerun chunk when ready to save file:
-#png(filename = OutputFilepath, width = 6, height = 4, units = "in", res = 300)
+png(filename = OutputFilepath, width = 6, height = 4, units = "in", res = 300)
 ###
 
 # generate models
