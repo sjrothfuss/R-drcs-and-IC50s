@@ -300,8 +300,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -309,16 +309,9 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -373,7 +366,7 @@ pre code {
 <div id="read-file-into-r" class="section level2">
 <h2>Read file into R</h2>
 <pre class="r"><code>### set file location
-RawFilepath &lt;- &#39;20220929_SRBAssayQuantification_Cispt120hr.csv&#39;
+RawFilepath &lt;- &#39;SampleData.csv&#39;
 ###
 
 platelayout &lt;- read.csv(RawFilepath)</code></pre>
@@ -410,7 +403,7 @@ MainTitle &lt;- &#39;Cisplatin Dose Response in XP2OS&#39;
 SubTitle &lt;- &#39;2hr drug exposure, 120hr growth, n=1 with technical triplicates&#39;
 YAxisTitle &lt;- &#39;Fractional survival&#39;
 XAxisTitle &lt;- &#39;Cisplatin Dosage (µM)&#39;
-OutputFilepath &lt;- &#39;CisPtDRC120hr.png&#39;
+OutputFilepath &lt;- &#39;SampleOutput.png&#39;
 ###
 
 ### remove comment on `png` command and rerun chunk when ready to save file:

@@ -13,7 +13,7 @@ library(drc)
 ## Read file into R
 ```{r}
 ### set file location
-RawFilepath <- '20220929_SRBAssayQuantification_Cispt120hr.csv'
+RawFilepath <- 'SampleData.csv'
 ###
 
 platelayout <- read.csv(RawFilepath)
@@ -52,7 +52,7 @@ MainTitle <- 'Cisplatin Dose Response in XP2OS'
 SubTitle <- '2hr drug exposure, 120hr growth, n=1 with technical triplicates'
 YAxisTitle <- 'Fractional survival'
 XAxisTitle <- 'Cisplatin Dosage (µM)'
-OutputFilepath <- 'CisPtDRC120hr.png'
+OutputFilepath <- 'SampleOutput.png'
 ###
 
 ### remove comment on `png` command and rerun chunk when ready to save file:
